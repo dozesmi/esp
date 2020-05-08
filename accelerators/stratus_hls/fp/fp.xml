@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sld>
+  <accelerator name="fp" desc="Accelerator FP" data_size="4" device_id="053" hls_tool="stratus_hls">
+    <param name="fp_vec" desc="fp_vec" />
+    <param name="fp_n" desc="fp_n" />
+    <param name="fp_len" desc="fp_len" />
+  </accelerator>
+</sld>

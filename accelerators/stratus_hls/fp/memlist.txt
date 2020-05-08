@@ -1,0 +1,4 @@
+fp_plm_block_in_dma32 6400 64 1w:0r 0w:1r
+fp_plm_block_out_dma32 100 64 1w:0r 0w:1r
+fp_plm_block_in_dma64 6400 64 1w:0r 0w:1r
+fp_plm_block_out_dma64 100 64 1w:0r 0w:1r

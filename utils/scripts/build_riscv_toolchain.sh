@@ -95,46 +95,46 @@ mkdir -p $TMP
 cd $TMP
 
 # Bare-metal compiler
-src=riscv-gnu-toolchain
-echo "*** Installing baremetal newlib tool chain... ***"
-if [ $(noyes "Skip ${src}") == "n" ]; then
-    if test -e $src; then
-	cd $src
-	git checkout .
-	git submodule update --init --recursive
-    else
-	git clone --recursive https://github.com/riscv/riscv-gnu-toolchain.git
-	cd $src
-    fi
+#src=riscv-gnu-toolchain
+#echo "*** Installing baremetal newlib tool chain... ***"
+#if [ $(noyes "Skip ${src}") == "n" ]; then
+#    if test -e $src; then
+#	cd $src
+#	git checkout .
+#	git submodule update --init --recursive
+#    else
+#	git clone --recursive https://github.com/riscv/riscv-gnu-toolchain.git
+#	cd $src
+#    fi
 
-    git reset --hard ${RISCV_GNU_TOOLCHAIN_SHA}
-    git submodule update --init --recursive
-    ./configure --prefix=${TARGET_DIR} --disable-gdb
-    cmd="make -j ${NTHREADS}"
-    runsudo ${TARGET_DIR} "$cmd"
+#    git reset --hard ${RISCV_GNU_TOOLCHAIN_SHA}
+#    git submodule update --init --recursive
+#    ./configure --prefix=${TARGET_DIR} --disable-gdb
+#    cmd="make -j ${NTHREADS}"
+#    runsudo ${TARGET_DIR} "$cmd"
 
-fi
-cd $TMP
+#fi
+#cd $TMP
 
 # Linux compiler
-echo "*** Installing Linux GlibC tool chain... ***"
-if [ $(noyes "Skip ${src}") == "n" ]; then
-    if test -e $src; then
-	cd $src
-	git checkout .
-	git submodule update --init --recursive
-    else
-	git clone --recursive https://github.com/riscv/riscv-gnu-toolchain.git
-	cd $src
-    fi
+#echo "*** Installing Linux GlibC tool chain... ***"
+#if [ $(noyes "Skip ${src}") == "n" ]; then
+#    if test -e $src; then
+#	cd $src
+#	git checkout .
+#	git submodule update --init --recursive
+#    else
+#	git clone --recursive https://github.com/riscv/riscv-gnu-toolchain.git
+#	cd $src
+#    fi
 
-    git reset --hard ${RISCV_GNU_TOOLCHAIN_SHA}
-    git submodule update --init --recursive
-    ./configure --prefix=${TARGET_DIR} --disable-gdb
-    cmd="make linux -j ${NTHREADS}"
-    runsudo ${TARGET_DIR} "$cmd"
+#    git reset --hard ${RISCV_GNU_TOOLCHAIN_SHA}
+#    git submodule update --init --recursive
+#    ./configure --prefix=${TARGET_DIR} --disable-gdb
+#    cmd="make linux -j ${NTHREADS}"
+#    runsudo ${TARGET_DIR} "$cmd"
 
-fi
+#fi
 cd $TMP
 
 
