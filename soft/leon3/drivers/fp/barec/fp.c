@@ -4,6 +4,7 @@
 #ifndef __riscv
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #endif
 
 #include <esp_accelerator.h>
