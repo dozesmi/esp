@@ -1,5 +1,6 @@
 #include "libesp.h"
 #include "cfg.h"
+#include <string.h>
 
 static unsigned in_words_adj;
 static unsigned out_words_adj;
@@ -27,18 +28,32 @@ static int validate_buffer(token_t *out, token_t *gold)
 
 
 /* User-defined code */
-static void init_buffer(token_t *in, token_t * gold)
+static void init_buffer(token_t *in, token_t * gold, double * double_in, double * double_gold)
 {
 	int i;
 	int j;
+	int k;
 
 	for (i = 0; i < fp_n; i++)
-		for (j = 0; j < fp_len * fp_vec; j++)
-			in[i * in_words_adj + j] = (token_t) j;
+        for (j = 0; j < fp_len * fp_vec; j++)
+            if(j%2 == 0)
+                double_in[i * in_words_adj + j] = -j/10;
+            else
+                double_in[i * in_words_adj + j] = j;
 
-	for (i = 0; i < fp_n; i++)
-		for (j = 0; j < fp_vec; j++)
-			gold[i * out_words_adj + j] = (token_t) j;
+    //to convert bits from ieee standard double to an int type
+    memcpy((void *)in, (void *)double_in, in_size);
+
+    // Compute golden output
+    for (i = 0; i < fp_n; i++)
+        for (j = 0; j < fp_vec; j++) {
+            double_gold[i * out_words_adj + j] = 0;
+            for (k = 0; k < fp_len; k++) {
+                double_gold[i * out_words_adj + j] += double_in[i * in_words_adj + j * fp_len + k];
+            }
+        }
+
+    memcpy((void *)gold, (void *)double_gold, out_size);
 }
 
 
@@ -67,13 +82,17 @@ int main(int argc, char **argv)
 
 	token_t *gold;
 	token_t *buf;
+	double *double_gold;
+	double *double_buf;
 
 	init_parameters();
 
 	buf = (token_t *) esp_alloc(size);
 	gold = malloc(out_size);
+	double_buf = malloc(size);
+	double_gold = malloc(out_size);
 
-	init_buffer(buf, gold);
+	init_buffer(buf, gold, double_buf, double_gold);
 
 	printf("\n====== %s ======\n\n", cfg_000[0].devname);
 	/* <<--print-params-->> */
@@ -89,6 +108,8 @@ int main(int argc, char **argv)
 	errors = validate_buffer(&buf[out_offset], gold);
 
 	free(gold);
+	free(double_buf);
+	free(double_gold);
 	esp_cleanup();
 
 	if (!errors)
