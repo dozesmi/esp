@@ -4,11 +4,11 @@
 #ifndef __riscv
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #endif
 
 #include <esp_accelerator.h>
 #include <esp_probe.h>
+#include <string.h>
 
 typedef int64_t token_t;
 
@@ -65,7 +65,7 @@ static int validate_buf(token_t *out, token_t *gold)
 }
 
 
-static void init_buf (token_t *in, token_t * gold, token_t * double_in, token_t * double_gold)
+static void init_buf (token_t *in, token_t * gold, double * double_in, double * double_gold)
 {
 	int i;
 	int j;
@@ -79,7 +79,7 @@ static void init_buf (token_t *in, token_t * gold, token_t * double_in, token_t 
                 double_in[i * in_words_adj + j] = j;
 
     //to convert bits from ieee standard double to an int type
-    memcpy((void *)in, (void *)double_in, sizeof(int64_t)*in_size);
+    memcpy((void *)in, (void *)double_in, in_size);
 
     // Compute golden output
     for (i = 0; i < fp_n; i++)
@@ -90,7 +90,7 @@ static void init_buf (token_t *in, token_t * gold, token_t * double_in, token_t 
             }
         }
 
-    memcpy((void *)gold, (void *)double_gold, sizeof(int64_t)*out_size);
+    memcpy((void *)gold, (void *)double_gold, out_size);
 }
 
 
@@ -105,8 +105,8 @@ int main(int argc, char * argv[])
 	unsigned **ptable;
 	token_t *mem;
 	token_t *gold;
-	token_t *double_gold;
-	token_t *double_mem;
+	double *double_gold;
+	double *double_mem;
 	unsigned errors = 0;
 
 	if (DMA_WORD_PER_BEAT(sizeof(token_t)) == 0) {
