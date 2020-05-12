@@ -172,11 +172,6 @@ subFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
         
     }
 
-    /*while(zTempFrac[62] != 1) {
-        count++;
-        zTempFrac = zTempFrac << 1;
-        zExp -= 1;
-    }*/
     sc_dt::sc_uint<7> zeros = getLeadingZeroes(zTempFrac) - 1;
     zTempFrac = zTempFrac << zeros;
     zExp -= zeros;
