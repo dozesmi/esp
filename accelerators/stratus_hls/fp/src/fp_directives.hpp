@@ -36,6 +36,10 @@
 
 #if defined(HLS_DIRECTIVES_BASIC)
 
+#elif defined(HLS_DIRECTIVES_FAST)
+
+#elif defined(HLS_DIRECTIVES_SMALL)
+
 #else
 
 #error Unsupported or undefined HLS configuration
@@ -49,6 +53,7 @@
 #define HLS_FLAT(_a)
 #define HLS_BREAK_DEP(_a)
 #define HLS_UNROLL_SIMPLE
+#define HLS_UNROLL_COMPUTE
 
 #endif /* STRATUS_HLS */
 

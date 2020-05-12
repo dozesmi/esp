@@ -155,25 +155,10 @@ subFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
 uint64_t
 float64_add (uint64_t a, uint64_t b)
 {
-  sc_dt::sc_uint<64> sc_a(a);
-  sc_dt::sc_uint<64> sc_b(b);
-
   bool aSign, bSign;
-  sc_dt::sc_uint<11> aExp, bExp;
-  sc_dt::sc_uint<52> aFrac, bFrac;
-  sc_dt::sc_uint<64> zA, zB;
   
   aSign = extractFloat64Sign (a);
   bSign = extractFloat64Sign (b);
-
-  aFrac = extractFloat64Frac (a);
-  bFrac = extractFloat64Frac (b);
-
-  aExp = extractFloat64Exp (a);
-  bExp = extractFloat64Exp (b);
-
-  zA = packFloat64(aSign, aExp, aFrac);
-  zB = packFloat64(bSign, bExp, bFrac);
   
   //cout << "aSign: " << aSign << " bSign: " << bSign << endl;
   //cout << "aExp: " << aExp << " bExp: " << bExp << endl;

@@ -318,7 +318,7 @@ void fp::compute_kernel()
                     if (ping)
                         sum = float64_add(sum, plm_in_ping[i]);
                     else
-                        sum = float64_add(sum, plm_in_ping[i]);
+                        sum = float64_add(sum, plm_in_pong[i]);
 
                     vector_index ++;
 
