@@ -36,6 +36,9 @@
 
 #if defined(HLS_DIRECTIVES_BASIC)
 
+#define HLS_EXTLAT_CONSTRAIN                    \
+    HLS_CONSTRAIN_LATENCY( 0, 1, "ExtractLat");
+
 #elif defined(HLS_DIRECTIVES_FAST)
 
 #elif defined(HLS_DIRECTIVES_SMALL)
@@ -54,6 +57,7 @@
 #define HLS_BREAK_DEP(_a)
 #define HLS_UNROLL_SIMPLE
 #define HLS_UNROLL_COMPUTE
+#define HLS_EXTLAT_CONSTRAIN
 
 #endif /* STRATUS_HLS */
 

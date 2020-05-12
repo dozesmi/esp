@@ -43,6 +43,8 @@ addFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
     sc_dt::sc_int<12> expDiff;
     sc_dt::sc_uint<64> aTempFrac, bTempFrac, zTempFrac;
 
+    {
+    HLS_EXTLAT_CONSTRAIN;
     aSign = extractFloat64Sign (a);
     aFrac = extractFloat64Frac (a);
     aExp = extractFloat64Exp (a);
@@ -55,12 +57,14 @@ addFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
     bTempFrac.range(61,10) = bFrac;
     aTempFrac[62] = 1;
     bTempFrac[62] = 1;
+    
 
     //Handles zero representation
     if(aFrac == 0 && aExp == 0)
         return (uint64_t) b;
     if(bFrac == 0 && bExp == 0)
         return (uint64_t) a;
+    
 
     //aExp is bigger
     if (0 < expDiff) {
@@ -75,6 +79,8 @@ addFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
         zExp = aExp;
     }
 
+    
+
     zTempFrac = aTempFrac + bTempFrac;
     //cout << "aTempFrac2: " << aTempFrac << endl;
     //cout << hex << zTempFrac << endl;
@@ -87,6 +93,7 @@ addFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
 
     //cout << hex << packFloat64(aSign, zExp, zFrac) << endl;
     return packFloat64(aSign, zExp, zFrac);
+    }
 }
 
 static uint64_t
@@ -98,6 +105,8 @@ subFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
     sc_dt::sc_int<12> expDiff;
     sc_dt::sc_uint<64> aTempFrac, bTempFrac, zTempFrac;
 
+    {
+    HLS_EXTLAT_CONSTRAIN;
     aSign = extractFloat64Sign (a);
     aFrac = extractFloat64Frac (a);
     aExp = extractFloat64Exp (a);
@@ -110,6 +119,7 @@ subFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
     bTempFrac.range(61,10) = bFrac;
     aTempFrac[62] = 1;
     bTempFrac[62] = 1;
+    
 
     //Handles zero representation
     if(aFrac == 0 && aExp == 0)
@@ -118,7 +128,7 @@ subFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
         return (uint64_t) a;
     if(bExp == aExp && bFrac == aFrac)
         return 0;
-
+    
     //aExp is bigger
     if (0 < expDiff) {
         zSign = aSign;
@@ -138,18 +148,25 @@ subFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
             zSign = bSign;
     }
 
+    
+
     if(aTempFrac > bTempFrac)
         zTempFrac = aTempFrac - bTempFrac;
     else
         zTempFrac = bTempFrac - aTempFrac;
     
+    }
+
     while(zTempFrac[62] != 1) {
         zTempFrac = zTempFrac << 1;
         zExp -= 1;
     }
-    zFrac = zTempFrac.range(61,10);
 
+    {
+    HLS_EXTLAT_CONSTRAIN;
+    zFrac = zTempFrac.range(61,10);
     return packFloat64(zSign, zExp, zFrac);
+    }
 }
 
 uint64_t
