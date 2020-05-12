@@ -34,6 +34,20 @@ packFloat64 (bool zSign, sc_dt::sc_uint<11> zExp, sc_dt::sc_uint<52> zFrac)
   return z;
 }
 
+inline sc_dt::sc_uint<7>
+getLeadingZeroes (sc_dt::sc_uint<64> z)
+{
+    sc_dt::sc_uint<64> y;
+    sc_dt::sc_uint<7> n = 64;
+    y = z >> 32; if(y != 0) {n = n - 32; z = y;}
+    y = z >> 16; if(y != 0) {n = n - 16; z = y;}
+    y = z >> 8; if(y != 0) {n = n - 8; z = y;}
+    y = z >> 4; if(y != 0) {n = n - 4; z = y;}
+    y = z >> 2; if(y != 0) {n = n - 2; z = y;}
+    y = z >> 1; if(y != 0) return n - 2;
+    return n - z.range(6,0);
+}
+
 static uint64_t
 addFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
 {
@@ -110,6 +124,7 @@ subFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
     aSign = extractFloat64Sign (a);
     aFrac = extractFloat64Frac (a);
     aExp = extractFloat64Exp (a);
+    bSign = extractFloat64Sign (b);
     bFrac = extractFloat64Frac (b);
     bExp = extractFloat64Exp (b);
 
@@ -154,13 +169,17 @@ subFloat64Sigs (sc_dt::sc_uint<64> a, sc_dt::sc_uint<64> b, bool zSign)
         zTempFrac = aTempFrac - bTempFrac;
     else
         zTempFrac = bTempFrac - aTempFrac;
-    
+        
     }
 
-    while(zTempFrac[62] != 1) {
+    /*while(zTempFrac[62] != 1) {
+        count++;
         zTempFrac = zTempFrac << 1;
         zExp -= 1;
-    }
+    }*/
+    sc_dt::sc_uint<7> zeros = getLeadingZeroes(zTempFrac) - 1;
+    zTempFrac = zTempFrac << zeros;
+    zExp -= zeros;
 
     {
     HLS_EXTLAT_CONSTRAIN;
