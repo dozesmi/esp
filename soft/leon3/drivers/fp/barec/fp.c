@@ -9,6 +9,7 @@
 #include <esp_accelerator.h>
 #include <esp_probe.h>
 #include <string.h>
+#include <time.h>
 
 typedef int64_t token_t;
 

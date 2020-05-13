@@ -320,6 +320,8 @@ void fp::compute_kernel()
                     else
                         sum = float64_add(sum, plm_in_pong[i]);
 
+                    {
+                    //HLS_EXTLAT_CONSTRAIN;
                     vector_index ++;
 
                     if(vector_index == fp_len) {
@@ -331,6 +333,8 @@ void fp::compute_kernel()
                         sum = 0;
                         vector_index = 0;
                         vector_number++;
+                    }
+
                     }
                 }
                 ping = !ping;

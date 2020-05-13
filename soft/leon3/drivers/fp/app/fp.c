@@ -1,6 +1,11 @@
 #include "libesp.h"
 #include "cfg.h"
 #include <string.h>
+#include <time.h>
+
+#define TICK(X) clock_t X = clock()
+#define TOCK(X) printf("time %s: %g sec.\n", (#X), (double)(clock() - (X)) / CLOCKS_PER_SEC)
+
 
 static unsigned in_words_adj;
 static unsigned out_words_adj;
@@ -44,6 +49,7 @@ static void init_buffer(token_t *in, token_t * gold, double * double_in, double 
     //to convert bits from ieee standard double to an int type
     memcpy((void *)in, (void *)double_in, in_size);
 
+	TICK(GOLD);
     // Compute golden output
     for (i = 0; i < fp_n; i++)
         for (j = 0; j < fp_vec; j++) {
@@ -52,7 +58,7 @@ static void init_buffer(token_t *in, token_t * gold, double * double_in, double 
                 double_gold[i * out_words_adj + j] += double_in[i * in_words_adj + j * fp_len + k];
             }
         }
-
+	TOCK(GOLD);
     memcpy((void *)gold, (void *)double_gold, out_size);
 }
 
@@ -85,6 +91,7 @@ int main(int argc, char **argv)
 	double *double_gold;
 	double *double_buf;
 
+	
 	init_parameters();
 
 	buf = (token_t *) esp_alloc(size);
@@ -101,7 +108,9 @@ int main(int argc, char **argv)
 	printf("  .fp_vec = %d\n", fp_vec);
 	printf("\n  ** START **\n");
 
+	TICK(FPRUN);
 	esp_run(cfg_000, NACC);
+	TOCK(FPRUN);
 
 	printf("\n  ** DONE **\n");
 
